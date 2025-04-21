@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebApp</title>
     <script type="importmap"></script>
+    <script src="https://kit.fontawesome.com/00a98ab9cd.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApp.styles.css" asp-append-version="true" />
 </head>
 <body>
 
-    <div class="portal">
-        <div class="side-menu">SIDE</div>
-        <div class="top-menu">TOP</div>
-        <div class="main">
+    <div class="backoffice-wrapper">
+        @await Html.PartialAsync("_SidebarPartial")
+        <main>
+            @await Html.PartialAsync("_HeaderPartial")
             @RenderBody()
-        </div>
+            
+            <section></section>
+        </main>
     </div>
 
 

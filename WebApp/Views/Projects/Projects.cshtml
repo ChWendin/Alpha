@@ -1,4 +1,29 @@
-﻿@{
-	Layout = "_PortalLayout";
-	ViewData["Title"] = "Projects";
+﻿@using WebApp.Models.Projects
+@model ProjectsViewModel
+@{
+    Layout = "_PortalLayout";
+    ViewData["Title"] = "Projects";
 }
+
+<section id="projects" class="page">
+    <div class="page-header">
+        <h1>Projects</h1>
+        <button type="button" class="btn btn-add" data-type="modal" data-target="#add-project-modal">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Project</span>
+        </button>
+    </div>
+    <section class="project-list">
+        @if(Model.Projects != null && Model.Projects.Any())
+        {
+            @foreach (var project in Model.Projects)
+            {
+                @await Html.PartialAsync("_ProjectListItemPartial", project)
+            }
+        }
+    </section>
+</section>
+
+
+@await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
+@await Html.PartialAsync("Modals/_EditProjectModalPartial", Model.EditProjectFormData)

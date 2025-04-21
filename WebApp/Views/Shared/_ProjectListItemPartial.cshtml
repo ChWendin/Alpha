@@ -1,0 +1,30 @@
+﻿@model ProjectViewModel
+
+<div class="card" data-project-id="@Model.Id">
+    <div class="project-card-header">
+        <img src="images/icons/Card-Image.svg">
+        <div class="project-card-header-text">
+            <span class="project-name">@Model.ProjectName</span>
+            <span class="client-name">@Model.ClientName</span>
+        </div>
+        <div id="project-actions-container">
+            <button type="button" data-type="dropdown" data-target="#project-dropdown-@Model.Id" class="btn-card-menu">
+                <img src="images/icons/Card-Menu.svg">
+            </button>
+            <div id="project-dropdown-@Model.Id" class="dropdown">
+                <button data-type="modal" data-target="#edit-project-modal" class="edit-project">
+                    <i class="fa-solid fa-pen"></i>
+                    <span>Edit</span>
+                </button>
+                <div class="dropdown-divider"></div>
+                <div class="delete-project">
+                    <i class="fa-solid fa-trash"></i>
+                    <span>Delete Project</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <span>@Html.Raw(Model.ProjectDescription)</span>
+    </div>
+</div>
