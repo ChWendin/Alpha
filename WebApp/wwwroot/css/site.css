@@ -1,4 +1,3 @@
-/* fonts */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
 
@@ -265,10 +264,10 @@ a {
     width: 100%;
 }
 
-    .form-select.has-placeholder .form-select-trigger {
-        color: var(--gray-800);
-        font-size: 1em;
-    }
+.form-select.has-placeholder .form-select-trigger {
+    color: var(--gray-800);
+    font-size: 1em;
+}
 
     .form-select:not(.has-placeholder) .form-select-trigger {
         color: var(--text-color);
@@ -459,17 +458,33 @@ a {
         min-width: 300px;
     }
 
-    #account-container .account-name {
+    #account-container .account-name,
+    #account-container .account-logout-form .account-logout {
         display: flex;
         align-items: center;
+        font-family: var(--font-standard);
+        font-size: 1rem;
+        font-style: normal;
         gap: 1rem;
-        font-weight: 600;
+        font-weight: 400;
         padding: 0.75rem 1rem;
         border-radius: 14px;
         cursor: pointer;
     }
 
-        #account-container .account-name:hover {
+        #account-container .account-name {
+            font-weight: 600;
+        }
+
+        #account-container .account-logout-form .account-logout {
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        #account-container .account-name:hover,
+        #account-container .account-logout-form .account-logout:hover {
             background-color: #F5F7FA;
         }
 
@@ -477,6 +492,11 @@ a {
             border: 2px solid var(--white-100);
             border-radius: 50%;
         }
+
+    #account-container .account-logout-form {
+        margin: 0;
+        padding: 0;
+    }
 
     #account-container .account-logout {
         display: flex;

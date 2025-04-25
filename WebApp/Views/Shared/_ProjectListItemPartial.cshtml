@@ -2,14 +2,14 @@
 
 <div class="card" data-project-id="@Model.Id">
     <div class="project-card-header">
-        <img src="images/icons/Card-Image.svg">
+        <img src="~/images/icons/Card-Image.svg">
         <div class="project-card-header-text">
             <span class="project-name">@Model.ProjectName</span>
             <span class="client-name">@Model.ClientName</span>
         </div>
         <div id="project-actions-container">
             <button type="button" data-type="dropdown" data-target="#project-dropdown-@Model.Id" class="btn-card-menu">
-                <img src="images/icons/Card-Menu.svg">
+                <img src="~/images/icons/Card-Menu.svg">
             </button>
             <div id="project-dropdown-@Model.Id" class="dropdown">
                 <button data-type="modal" data-target="#edit-project-modal" class="edit-project">

@@ -1,0 +1,74 @@
+﻿@model WebApp.Models.Auth.SignUpViewModel
+
+@{
+    Layout = "_CleanLayout";
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="surface">
+    <h1 class="signup-header">Create Account</h1>
+
+    <form class="signup-form" asp-controller="SignUp" asp-action="SignUp" method="post" novalidate>
+        @Html.AntiForgeryToken()
+
+        <!-- Visar samtliga valideringsfel överst -->
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+        <div class="form-fields">
+            <label asp-for="FormData.FullName"></label>
+            <input class="form-field"
+                   asp-for="FormData.FullName"
+                   placeholder="Your full name" />
+            <span asp-validation-for="FormData.FullName" class="text-danger"></span>
+        </div>
+
+        <div class="form-fields">
+            <label asp-for="FormData.Email"></label>
+            <input class="form-field"
+                   asp-for="FormData.Email"
+                   type="email"
+                   placeholder="Your email address" />
+            <span asp-validation-for="FormData.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-fields">
+            <label asp-for="FormData.Password"></label>
+            <input class="form-field"
+                   asp-for="FormData.Password"
+                   type="password"
+                   placeholder="Enter your password" />
+            <span asp-validation-for="FormData.Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-fields">
+            <label asp-for="FormData.ConfirmPassword"></label>
+            <input class="form-field"
+                   asp-for="FormData.ConfirmPassword"
+                   type="password"
+                   placeholder="Confirm your password" />
+            <span asp-validation-for="FormData.ConfirmPassword" class="text-danger"></span>
+        </div>
+
+        <div class="form-checkbox-group">
+            <label class="form-checkbox">
+                <input asp-for="FormData.Terms"
+                       class="form-checkbox-input"
+                       type="checkbox" />
+                <span class="form-checkbox-box"></span>
+            </label>
+            <label asp-for="FormData.Terms" class="form-label">
+                I accept <a href="#">Terms and Conditions</a>
+            </label>
+            <span asp-validation-for="FormData.Terms" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-blue" type="submit">Create Account</button>
+    </form>
+
+    <footer class="login-footer mt-4">
+        Already have an account?
+        <a asp-controller="Login" asp-action="Login">Login</a>
+    </footer>
+</div>
+
+

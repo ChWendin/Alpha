@@ -7,7 +7,7 @@
         </div>
         <div class="card-body">
             <div class="project-image">
-                <img src="images/icons/Project-Image.svg">
+                <img src="~/images/icons/Project-Image.svg">
             </div>
             <form class="add-project-form" asp-controller="" asp-action="" method="post" novalidate>
                 <div class="form-group">
@@ -47,9 +47,11 @@
                             <span class="form-select-text"></span>
                         </button>
                         <ul class="form-select-options">
-                            <li class="form-select-option" data-value="1">STARTED</li>
-                            <li class="form-select-option" data-value="2">COMPLETED</li>
-                            <li class="form-select-option" data-value="3">NOT STARTED</li>
+                            @foreach(var option in Model.Statuses)
+                            {
+                            <li class="form-select-option" data-value="@option.Value">@option.Text</li>   
+                            }
+
                         </ul>
                         <input type="hidden" name="client-select-value" />
                     </div>

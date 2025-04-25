@@ -1,0 +1,35 @@
+﻿@model LoginViewModel
+
+@{
+	Layout = "_CleanLayout";
+	ViewData["Title"] = "Login";
+}
+
+<div class="surface">
+    <h1 class="login-header">Login</h1>
+    <form class="login-form" asp-controller="Login" asp-action="Login" method="POST" novalidate>
+        <div class="form-fields">
+            <label asp-for="FormData.Email">Email</label>
+            <input class="form-field" asp-for="FormData.Email" type="email" placeholder="Your email address" required />
+            <span asp-validation-for="FormData.Email" style="color:firebrick;"></span>
+        </div>
+
+        <div class="form-fields">
+            <label asp-for="FormData.Password">Password</label>
+            <input class="form-field" asp-for="FormData.Password" type="password" placeholder="Enter your password" required />
+            <span asp-validation-for="FormData.Password" style="color:firebrick;"></span>
+        </div>
+
+        <div class="form-checkbox-group">
+            <label class="form-checkbox">
+                <input asp-for="FormData.RememberMe" id="terms-checkbox" class="form-checkbox-input" type="checkbox">
+                <span class="form-checkbox-box"></span>
+            </label>
+            <label asp-for="FormData.RememberMe" class="form-label">Remember me </label>
+        </div>
+
+
+        <button class="btn btn-blue">Log In</button>
+    </form>
+    <footer class="login-footer">Don't have an account? <a asp-controller="SignUp" asp-action="SignUp">Sign Up</a></footer>
+</div>

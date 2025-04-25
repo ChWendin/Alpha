@@ -1,25 +1,42 @@
-﻿<header id="header">
+﻿@using Data.Entities
+@inject UserManager<MemberEntity> UserManager
+
+@{
+    
+    MemberEntity? currentUser = null;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        currentUser = UserManager.GetUserAsync(User).Result;
+    }
+    var fullName = currentUser?.FullName ?? "Guest";
+}
+
+<header id="header">
     <div id="settings-container">
         <button type="button" data-type="dropdown" data-target="#settings-dropdown" class="btn-settings">
-            <img src="images/icons/Setting.svg">
+            <img src="~/images/icons/Setting.svg">
         </button>
-        <div id="settings-dropdown" class="dropdown hide">
-        </div>
+        @* <div id="settings-dropdown" class="dropdown hide"> *@
+        @* </div> *@
     </div>
     <div class="button-divider"></div>
     <div id="account-container">
         <button type="button" data-type="dropdown" data-target="#account-dropdown" class="btn-account">
-            <img src="images/logotypes/Header-Avatar.svg" alt="template avatar">
+            <img src="~/images/logotypes/Header-Avatar.svg" alt="template avatar">
         </button>
         <div id="account-dropdown" class="dropdown">
             <div class="account-name">
-                <img src="images/logotypes/Header-Avatar.svg">
-                <span>Christoffer Wendin</span>
+                <img src="~/images/logotypes/Header-Avatar.svg">
+                <span>@fullName</span>
             </div>
-            <div class="account-logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </div>
+            <form asp-controller="Login" asp-action="Logout" method="post" class="account-logout-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="account-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+
         </div>
     </div>
 </header>
