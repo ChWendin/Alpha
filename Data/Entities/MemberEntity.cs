@@ -7,5 +7,6 @@ public class MemberEntity : IdentityUser
 {
     [ProtectedPersonalData]
     public string? FullName { get; set; } = null!;
+
 }
 

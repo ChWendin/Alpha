@@ -11,15 +11,12 @@
     <form class="signup-form" asp-controller="SignUp" asp-action="SignUp" method="post" novalidate>
         @Html.AntiForgeryToken()
 
-        <!-- Visar samtliga valideringsfel överst -->
-        <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
         <div class="form-fields">
             <label asp-for="FormData.FullName"></label>
             <input class="form-field"
                    asp-for="FormData.FullName"
                    placeholder="Your full name" />
-            <span asp-validation-for="FormData.FullName" class="text-danger"></span>
+            <span asp-validation-for="FormData.FullName"></span>
         </div>
 
         <div class="form-fields">
@@ -28,7 +25,7 @@
                    asp-for="FormData.Email"
                    type="email"
                    placeholder="Your email address" />
-            <span asp-validation-for="FormData.Email" class="text-danger"></span>
+            <span asp-validation-for="FormData.Email"></span>
         </div>
 
         <div class="form-fields">
@@ -37,7 +34,7 @@
                    asp-for="FormData.Password"
                    type="password"
                    placeholder="Enter your password" />
-            <span asp-validation-for="FormData.Password" class="text-danger"></span>
+            <span asp-validation-for="FormData.Password"></span>
         </div>
 
         <div class="form-fields">
@@ -46,7 +43,7 @@
                    asp-for="FormData.ConfirmPassword"
                    type="password"
                    placeholder="Confirm your password" />
-            <span asp-validation-for="FormData.ConfirmPassword" class="text-danger"></span>
+            <span asp-validation-for="FormData.ConfirmPassword"></span>
         </div>
 
         <div class="form-checkbox-group">
@@ -59,7 +56,7 @@
             <label asp-for="FormData.Terms" class="form-label">
                 I accept <a href="#">Terms and Conditions</a>
             </label>
-            <span asp-validation-for="FormData.Terms" class="text-danger"></span>
+            <span asp-validation-for="FormData.Terms"></span>
         </div>
 
         <button class="btn btn-blue" type="submit">Create Account</button>
@@ -71,4 +68,4 @@
     </footer>
 </div>
 
-
+@await Html.PartialAsync("_ValidationScripts")

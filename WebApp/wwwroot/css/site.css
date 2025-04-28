@@ -251,6 +251,11 @@ a {
         cursor: pointer;
     }
 
+.field-validation-error {
+    color: firebrick;
+    font-weight: 600;
+}
+
 .form-label {
     font-size: 1em;
     font-weight: 600;

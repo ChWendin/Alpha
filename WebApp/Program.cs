@@ -12,7 +12,6 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configura
 
 builder.Services.AddIdentity<MemberEntity, IdentityRole>(options =>
 {
-    // här kan du ställa in lösenordsregler, lockout-policy etc.
     options.Password.RequiredLength = 8;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireDigit = false;
@@ -21,6 +20,15 @@ builder.Services.AddIdentity<MemberEntity, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<DataContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(x =>
+{
+    x.LoginPath = "/Login/Login";
+    x.LogoutPath = "/Login/Logout";
+    x.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    x.SlidingExpiration = true;
+});
+
 
 builder.Services.AddScoped<Data.Services.UserService>();
 

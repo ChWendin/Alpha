@@ -5,7 +5,7 @@ namespace Shared.Models
     public class SignUpFormModel
     {
         [Required]
-        [Display(Name = "First Name", Prompt = "Enter your full name")]
+        [Display(Name = "Full Name", Prompt = "Enter your full name")]
         public string FullName { get; set; } = null!;
 
         [Required]
@@ -26,7 +26,7 @@ namespace Shared.Models
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; } = null!;
 
-        [Range(typeof(bool), "true", "true")]
+        //[Range(typeof(bool), "true", "true")]
         public bool Terms { get; set; } 
     }
 }
