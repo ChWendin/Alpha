@@ -12,15 +12,25 @@
                 <img src="~/images/icons/Card-Menu.svg">
             </button>
             <div id="project-dropdown-@Model.Id" class="dropdown">
-                <button data-type="modal" data-target="#edit-project-modal" class="edit-project">
+                <button type="button"
+                        class="edit-project"
+                        data-id="@Model.Id"
+                        data-target="#edit-project-modal">
                     <i class="fa-solid fa-pen"></i>
                     <span>Edit</span>
                 </button>
                 <div class="dropdown-divider"></div>
-                <div class="delete-project">
-                    <i class="fa-solid fa-trash"></i>
-                    <span>Delete Project</span>
-                </div>
+                <form asp-controller="Projects"
+                      asp-action="Delete"
+                      asp-route-id="@Model.Id"
+                      method="post"
+                      class="delete-project-form">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="delete-project">
+                        <i class="fa-solid fa-trash"></i>
+                        <span>Delete Project</span>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

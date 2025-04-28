@@ -14,12 +14,23 @@ namespace Data.Contexts
         }
 
         // Exempel på egna entiteter
-
+        public DbSet<ProjectEntity> Projects { get; set; } = null!;
+        public DbSet<ClientEntity> Clients { get; set; } = null!;
+        public DbSet<StatusTypeEntity> StatusTypes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // här kan du konfigurera ytterligare din modell
+            // Seed status­typer
+            builder.Entity<StatusTypeEntity>().HasData(
+                new StatusTypeEntity { Id = 1, Name = "NOT STARTED" },
+                new StatusTypeEntity { Id = 2, Name = "STARTED" },
+                new StatusTypeEntity { Id = 3, Name = "COMPLETED" }
+            );
+            // Alla nya ProjectEntity får default StatusTypeId = 1
+            builder.Entity<ProjectEntity>()
+                   .Property(p => p.StatusTypeId)
+                   .HasDefaultValue(1);
         }
     }
 }

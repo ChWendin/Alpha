@@ -1,8 +1,14 @@
-﻿namespace WebApp.Models.Projects;
+﻿using System.Collections.Generic;
 
-public class ProjectsViewModel
+namespace WebApp.Models.Projects
 {
-    public IEnumerable<ProjectViewModel> Projects { get; set; } = [];
-    public AddProjectViewModel AddProjectFormData { get; set; } = new();
-    public EditProjectViewModel EditProjectFormData { get; set; } = new();
+    public class ProjectsViewModel
+    {
+
+        public IEnumerable<ProjectViewModel> Projects { get; set; } = new List<ProjectViewModel>();
+
+        public AddProjectViewModel AddProjectFormData { get; set; } = new AddProjectViewModel();
+
+        public EditProjectViewModel EditProjectFormData { get; set; } = new EditProjectViewModel();
+    }
 }

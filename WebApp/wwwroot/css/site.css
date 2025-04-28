@@ -172,7 +172,7 @@ a {
 }
 
     .add-project-form .btn {
-        margin-top: 8rem;
+        margin-top: 5rem;
     }
 
 .form-fields {
@@ -488,10 +488,19 @@ a {
             text-align: left;
         }
 
-        #account-container .account-name:hover,
-        #account-container .account-logout-form .account-logout:hover {
-            background-color: #F5F7FA;
-        }
+.delete-project {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+            #account-container .account-name:hover,
+            #account-container .account-logout-form .account-logout:hover {
+                background-color: #F5F7FA;
+            }
 
         #account-container .account-name img {
             border: 2px solid var(--white-100);
@@ -533,6 +542,7 @@ a {
 
 #edit-project-modal .card {
     width: 550px;
+    max-height: 98%
 }
 
     #edit-project-modal .card .card-header {

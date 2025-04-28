@@ -25,4 +25,24 @@
 
 
 @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
-@await Html.PartialAsync("Modals/_EditProjectModalPartial", Model.EditProjectFormData)
+
+<!-- EDIT-MODAL som ligger tom tills AJAX laddar in formuläret -->
+<section id="edit-project-modal" class="modal hide">
+    <div class="card">
+        <div class="card-header">
+            <h3>Edit Project</h3>
+            <button data-type="close"
+                    data-target="#edit-project-modal"
+                    class="btn-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="project-image">
+                <img src="~/images/icons/Project-Image.svg" asp-append-version="true" alt="" />
+            </div>
+            <!-- Här kommer form:en att laddas in -->
+            <div id="edit-project-form-container"></div>
+        </div>
+    </div>
+</section>

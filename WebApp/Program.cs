@@ -1,15 +1,18 @@
 using Data.Contexts;
 using Data.Entities;
+using Data.Interfaces;
+using Data.Repositories;
 using Data.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// DbContext
+builder.Services.AddDbContext<DataContext>(x =>
+    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
+// Identity
 builder.Services.AddIdentity<MemberEntity, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 8;
@@ -21,6 +24,7 @@ builder.Services.AddIdentity<MemberEntity, IdentityRole>(options =>
     .AddEntityFrameworkStores<DataContext>()
     .AddDefaultTokenProviders();
 
+// Cookie-inställningar
 builder.Services.ConfigureApplicationCookie(x =>
 {
     x.LoginPath = "/Login/Login";
@@ -29,13 +33,19 @@ builder.Services.ConfigureApplicationCookie(x =>
     x.SlidingExpiration = true;
 });
 
+// Registrera repositories
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IStatusTypeRepository, StatusTypeRepository>();
 
-builder.Services.AddScoped<Data.Services.UserService>();
+// Registrera UserService
+builder.Services.AddScoped<UserService>();
 
-
+// MVC
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -49,6 +59,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Login}/{action=Login}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
