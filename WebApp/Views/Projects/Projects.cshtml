@@ -2,6 +2,13 @@
 @{
     Layout = "_PortalLayout";
     ViewData["Title"] = "Projects";
+
+    var cf = Model.CurrentFilter;
+
+    // Räkna på hela listan
+    var allCount = Model.AllProjects.Count();
+    var startedCount = Model.AllProjects.Count(p => p.StatusTypeId == 2);
+    var completedCount = Model.AllProjects.Count(p => p.StatusTypeId == 3);
 }
 
 <section id="projects" class="page">
@@ -11,6 +18,17 @@
             <i class="fa-solid fa-plus"></i>
             <span>Add Project</span>
         </button>
+    </div>
+    <div class="filter-group">
+        <a asp-action="Projects" class="btn-filter @(cf == 1 ? "active" : "")">
+            ALL [@allCount]
+        </a>
+        <a asp-action="Projects" asp-route-statusTypeId="2" class="btn-filter @(cf == 2 ? "active" : "")">
+            STARTED [@startedCount]
+        </a>
+        <a asp-action="Projects" asp-route-statusTypeId="3" class="btn-filter @(cf == 3 ? "active" : "")">
+            COMPLETED [@completedCount]
+        </a>
     </div>
     <section class="project-list">
         @if(Model.Projects != null && Model.Projects.Any())

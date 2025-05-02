@@ -33,6 +33,7 @@ namespace Business.Services
                 StartDate = p.StartDate,
                 EndDate = p.EndDate,
                 Budget = p.Budget,
+                StatusTypeId = p.StatusTypeId,
                 StatusText = p.StatusType.Name
             });
         }

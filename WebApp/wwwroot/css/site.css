@@ -605,6 +605,12 @@ a {
     padding: 1rem 1rem 0 1rem;
 }
 
+.filter-group {
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 2rem;
+}
+
 /* dropdown */
 .dropdown {
     display: none;
@@ -822,6 +828,20 @@ h6 {
     .btn-card-menu img {
         width: 25px;
         height: 25px;
+    }
+
+.btn-filter {
+    background-color: transparent;
+    border: none;
+    padding-bottom: 1rem;
+    padding-top: 2rem;
+    font-weight: 700;
+    color: #637085;
+}
+
+    .btn-filter.active {
+        color: var(--blue-accent);
+        border-bottom: 3px solid var(--blue-accent);
     }
 
 /* links */

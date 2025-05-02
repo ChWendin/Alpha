@@ -10,5 +10,6 @@
         public DateTime? EndDate { get; set; }
         public decimal Budget { get; set; }
         public string StatusText { get; set; } = string.Empty;
+        public int StatusTypeId { get; set; }
     }
 }

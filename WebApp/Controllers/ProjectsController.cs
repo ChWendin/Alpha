@@ -52,16 +52,14 @@ namespace WebApp.Controllers
             );
         }
         [HttpGet]
-        public async Task<IActionResult> Projects()
+        public async Task<IActionResult> Projects(int? statusTypeId)
         {
-            // 1) Hämta alla projekt, statusar
-            var projects = await _service.GetAllAsync();
-            var statuses = await _service.GetAllStatusesAsync();
+            // 1) Hämta alla DTO:er från service-lagret
+            var dtos = await _service.GetAllAsync();
 
-            // 2) Bygg vy-modellen
-            var vm = new ProjectsViewModel
-            {
-                Projects = projects.Select(p => new ProjectViewModel
+            // 2) Mappa till ProjectViewModel (inkl. StatusTypeId för filtrering)
+            var all = dtos
+                .Select(p => new ProjectViewModel
                 {
                     Id = p.Id.ToString(),
                     ProjectName = p.ProjectName,
@@ -70,28 +68,49 @@ namespace WebApp.Controllers
                     StartDate = p.StartDate,
                     EndDate = p.EndDate,
                     Budget = p.Budget,
-                    StatusText = p.StatusText
-                }),
+                    StatusText = p.StatusText,
+                    StatusTypeId = p.StatusTypeId      // <— för att kunna filtrera
+                })
+                .ToList();
 
-                // Formdata för “Add project”
+            // 3) Filtrera listan baserat på statusTypeId
+            var filtered = statusTypeId switch
+            {
+                2 => all.Where(p => p.StatusTypeId == 2),
+                3 => all.Where(p => p.StatusTypeId == 3),
+                _ => all
+            };
+
+            // 4) Hämta alla statusar för dropdowns i modalerna
+            var statuses = await _service.GetAllStatusesAsync();
+
+            // 5) Bygg upp vy-modellen
+            var vm = new ProjectsViewModel
+            {
+                AllProjects = all,
+                Projects = filtered,
+                CurrentFilter = statusTypeId ?? 1,
+
+                // Formdata för "Add Project"-modalen
                 AddProjectFormData = new AddProjectViewModel
                 {
                     Statuses = statuses
-                        .Select(s => new SelectListItem(s.Name, s.Id.ToString())),
+                                .Select(s => new SelectListItem(s.Name, s.Id.ToString())),
                     StartDate = DateTime.Today
                 },
 
-                // Formdata för “Edit project” (initiellt tom; AJAX fyller innehåll)
+                // Formdata för "Edit Project"-modalen (tomt initialt, fylls via AJAX)
                 EditProjectFormData = new EditProjectViewModel
                 {
                     Statuses = statuses
-                        .Select(s => new SelectListItem(s.Name, s.Id.ToString())),
+                                .Select(s => new SelectListItem(s.Name, s.Id.ToString())),
                     StartDate = DateTime.Today
                 }
             };
 
             return View(vm);
         }
+
 
         // POST /Projects/Add
         [HttpPost, ValidateAntiForgeryToken]
