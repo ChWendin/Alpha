@@ -23,7 +23,12 @@
     </div>
 
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await Html.PartialAsync("_ValidationScripts")
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        // Url.Action("Edit","Projects") ger t.ex. "/Projects/Edit"
+        window.editProjectBaseUrl = '@Url.Action("Edit", "Projects")';
+    </script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

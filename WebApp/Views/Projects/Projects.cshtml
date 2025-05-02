@@ -25,6 +25,19 @@
 
 
 @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
+@section Scripts {
+    @* Om ShowAddModal = true, öppna Add-modalen direkt *@
+    @if ((bool?)(ViewData["ShowAddModal"]) == true)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              document
+                .querySelector("#add-project-modal")
+                .classList.add("modal-show");
+            });
+        </script>
+    }
+}
 
 <!-- EDIT-MODAL som ligger tom tills AJAX laddar in formuläret -->
 <section id="edit-project-modal" class="modal hide">

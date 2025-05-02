@@ -1,8 +1,9 @@
-using Data.Contexts;
+using Business.Contexts;
+using Business.Interfaces;
+using Business.Services;
 using Data.Entities;
 using Data.Interfaces;
 using Data.Repositories;
-using Data.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,7 @@ builder.Services.AddScoped<IStatusTypeRepository, StatusTypeRepository>();
 
 // Registrera UserService
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 // MVC
 builder.Services.AddControllersWithViews();

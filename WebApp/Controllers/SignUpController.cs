@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApp.Models.Auth;
 using Shared.Models;
-using Data.Services;
+using Business.Services;
 
 namespace WebApp.Controllers
 {

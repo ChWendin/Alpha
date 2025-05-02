@@ -1,9 +1,6 @@
-﻿
-
-using Data.Contexts;
+﻿using Business.Contexts;
 using Data.Entities;
 using Data.Interfaces;
-
 
 namespace Data.Repositories
 {

@@ -1,7 +1,9 @@
-﻿using Data.Contexts;
-using Data.Entities;
+﻿using Business.Contexts;
 using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Data.Entities;
+
+
 
 
 namespace Data.Repositories

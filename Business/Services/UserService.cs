@@ -1,10 +1,9 @@
-﻿
-using Data.Entities;
+﻿using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
-namespace Data.Services;
+namespace Business.Services;
 
 public class UserService(UserManager<MemberEntity> userManager, SignInManager<MemberEntity> signInManager)
 {

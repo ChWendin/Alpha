@@ -83,19 +83,19 @@
     });
 
 
-    // --- AJAX‐driven Edit Project‐modal ---
+    // --- AJAX-driven Edit Project-modal ---
     document.addEventListener('click', async e => {
-        const editBtn = e.target.closest('.edit-project');
-        if (!editBtn) return;
+        const btn = e.target.closest('.edit-project');
+        if (!btn) return;
 
-        const projectId = editBtn.getAttribute('data-id');
+        const id = btn.getAttribute('data-id');
+        const url = `${window.editProjectBaseUrl}/${id}`;
         const modal = document.querySelector('#edit-project-modal');
         const container = modal.querySelector('#edit-project-form-container');
 
         try {
-            const resp = await fetch(`/Projects/Edit/${projectId}`);
+            const resp = await fetch(url);
             if (!resp.ok) throw new Error(`Status ${resp.status}`);
-
             container.innerHTML = await resp.text();
             modal.classList.add('modal-show');
         } catch (err) {

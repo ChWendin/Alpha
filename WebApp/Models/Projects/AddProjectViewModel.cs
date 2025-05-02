@@ -9,12 +9,13 @@ namespace WebApp.Models.Projects
     {
         [Required]
         [Display(Name = "Project Name")]
-        public string ProjectName { get; set; } = string.Empty;
+        public string ProjectName { get; set; } = null!;
 
         [Required]
         [Display(Name = "Client Name")]
-        public string ClientName { get; set; } = string.Empty;
+        public string ClientName { get; set; } = null!;
 
+        
         [Display(Name = "Description")]
         public string? ProjectDescription { get; set; }
 
@@ -30,7 +31,7 @@ namespace WebApp.Models.Projects
         [Required]
         [Range(0, double.MaxValue)]
         [Display(Name = "Budget")]
-        public decimal Budget { get; set; }
+        public decimal Budget { get; set; } 
 
         [Required]
         [Display(Name = "Status")]

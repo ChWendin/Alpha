@@ -4,90 +4,89 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Data.Entities;
-using Data.Interfaces;
 using WebApp.Models.Projects;
+using Business.Interfaces;        // där IProjectService ligger
+using Business.DTO;              // AddProjectDto, EditProjectDto, ProjectDto
 
 namespace WebApp.Controllers
 {
     [Authorize]
     public class ProjectsController : Controller
     {
-        private readonly IProjectRepository _projectRepo;
-        private readonly IClientRepository _clientRepo;
-        private readonly IStatusTypeRepository _statusRepo;
+        private readonly IProjectService _service;
 
-        public ProjectsController(
-            IProjectRepository projectRepo,
-            IClientRepository clientRepo,
-            IStatusTypeRepository statusRepo)
+        public ProjectsController(IProjectService service)
         {
-            _projectRepo = projectRepo;
-            _clientRepo = clientRepo;
-            _statusRepo = statusRepo;
+            _service = service;
         }
-
-        // GET /Projects/Edit/5 – returnerar bara formuläret (partial) för AJAX
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            // Hämta med Client och StatusType inkluderade
-            var all = await _projectRepo.GetAllWithDetailsAsync();
-            var p = all.FirstOrDefault(x => x.Id == id);
-            if (p == null) return NotFound();
+            // 1) Hämta den enskilda DTO:n
+            var dto = await _service.GetByIdAsync(id);
+            if (dto == null)
+                return NotFound();
 
-            var statuses = await _statusRepo.GetAllAsync();
+            // 2) Hämta status-listan
+            var statuses = await _service.GetAllStatusesAsync();
 
+            // 3) Mappa till din vy-modell
             var vm = new EditProjectViewModel
             {
-                Id = p.Id,
-                ProjectName = p.ProjectName,
-                ClientName = p.Client.ClientName,
-                ProjectDescription = p.ProjectDescription,
-                StartDate = p.StartDate,
-                EndDate = p.EndDate,
-                Budget = p.Budget,
-                StatusTypeId = p.StatusTypeId,
+                Id = dto.Id,
+                ProjectName = dto.ProjectName,
+                ClientName = dto.ClientName,
+                ProjectDescription = dto.ProjectDescription,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Budget = dto.Budget,
+                StatusTypeId = dto.StatusTypeId,
                 Statuses = statuses
-                                       .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
+                                        .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
             };
 
+            // 4) Returnera just partialen
             return PartialView(
-            "~/Views/Shared/Modals/_EditProjectModalPartial.cshtml", vm);
+                "~/Views/Shared/Modals/_EditProjectModalPartial.cshtml",
+                vm
+            );
         }
-
-        // GET /Projects
         [HttpGet]
         public async Task<IActionResult> Projects()
         {
-            var projects = await _projectRepo.GetAllWithDetailsAsync();
-            var statuses = await _statusRepo.GetAllAsync();
+            // 1) Hämta alla projekt, statusar
+            var projects = await _service.GetAllAsync();
+            var statuses = await _service.GetAllStatusesAsync();
 
+            // 2) Bygg vy-modellen
             var vm = new ProjectsViewModel
             {
                 Projects = projects.Select(p => new ProjectViewModel
                 {
                     Id = p.Id.ToString(),
                     ProjectName = p.ProjectName,
-                    ClientName = p.Client.ClientName,
-                    ProjectDescription = p.ProjectDescription ?? string.Empty,
+                    ClientName = p.ClientName,
+                    ProjectDescription = p.ProjectDescription ?? "",
                     StartDate = p.StartDate,
                     EndDate = p.EndDate,
                     Budget = p.Budget,
-                    StatusText = p.StatusType.Name
+                    StatusText = p.StatusText
                 }),
 
+                // Formdata för “Add project”
                 AddProjectFormData = new AddProjectViewModel
                 {
                     Statuses = statuses
-                        .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
+                        .Select(s => new SelectListItem(s.Name, s.Id.ToString())),
+                    StartDate = DateTime.Today
                 },
 
-                // Initiera en tom EditFormData – AJAX kommer ladda in värden senare
+                // Formdata för “Edit project” (initiellt tom; AJAX fyller innehåll)
                 EditProjectFormData = new EditProjectViewModel
                 {
                     Statuses = statuses
-                        .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
+                        .Select(s => new SelectListItem(s.Name, s.Id.ToString())),
+                    StartDate = DateTime.Today
                 }
             };
 
@@ -100,94 +99,74 @@ namespace WebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var statuses = await _statusRepo.GetAllAsync();
+                ViewData["ShowAddModal"] = true;
+                var statuses = await _service.GetAllStatusesAsync();
                 form.Statuses = statuses
                     .Select(s => new SelectListItem(s.Name, s.Id.ToString()));
 
-                var vm = await BuildProjectsViewModel(form, null);
+                var vm = await BuildViewModel(form, null);
                 return View("Projects", vm);
             }
 
-            // Klienthantering
-            var client = await _clientRepo.GetAsync(c => c.ClientName == form.ClientName);
-            if (client == null)
-            {
-                client = new ClientEntity { ClientName = form.ClientName };
-                await _clientRepo.AddAsync(client);
-            }
-
-            var project = new ProjectEntity
+            await _service.AddAsync(new AddProjectDto
             {
                 ProjectName = form.ProjectName,
-                ClientId = client.Id,
+                ClientName = form.ClientName,
                 ProjectDescription = form.ProjectDescription,
                 StartDate = form.StartDate,
                 EndDate = form.EndDate,
                 Budget = form.Budget,
                 StatusTypeId = form.StatusTypeId
-            };
-            await _projectRepo.AddAsync(project);
+            });
 
             return RedirectToAction(nameof(Projects));
         }
 
-        // POST /Projects/Delete/5
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var project = await _projectRepo.GetAsync(p => p.Id == id);
-            if (project == null) return NotFound();
-
-            await _projectRepo.RemoveAsync(project);
-            return RedirectToAction(nameof(Projects));
-        }
-
-        // POST /Projects/Edit (saves)
+        // POST /Projects/Edit
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditProjectViewModel form)
         {
             if (!ModelState.IsValid)
             {
-                var statuses = await _statusRepo.GetAllAsync();
+                ViewData["ShowEditModal"] = true;
+                var statuses = await _service.GetAllStatusesAsync();
                 form.Statuses = statuses
                     .Select(s => new SelectListItem(s.Name, s.Id.ToString()));
 
-                var vm = await BuildProjectsViewModel(null, form);
+                var vm = await BuildViewModel(null, form);
                 return View("Projects", vm);
             }
 
-            // Klienthantering om namn ändrats
-            var client = await _clientRepo.GetAsync(c => c.ClientName == form.ClientName);
-            if (client == null)
-            {
-                client = new ClientEntity { ClientName = form.ClientName };
-                await _clientRepo.AddAsync(client);
-            }
-
-            var project = new ProjectEntity
+            await _service.UpdateAsync(new EditProjectDto
             {
                 Id = form.Id,
                 ProjectName = form.ProjectName,
-                ClientId = client.Id,
+                ClientName = form.ClientName,
                 ProjectDescription = form.ProjectDescription,
                 StartDate = form.StartDate,
                 EndDate = form.EndDate,
                 Budget = form.Budget,
                 StatusTypeId = form.StatusTypeId
-            };
-            await _projectRepo.UpdateAsync(project);
+            });
 
             return RedirectToAction(nameof(Projects));
         }
 
-        // Hjälpmetod för Add/Edit‐fel: bygger om hela vymodellen
-        private async Task<ProjectsViewModel> BuildProjectsViewModel(
+        // POST /Projects/Delete/{id}
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteAsync(id);
+            return RedirectToAction(nameof(Projects));
+        }
+
+        // Bygg om hela vy-modellen när Add/Edit validering misslyckas
+        private async Task<ProjectsViewModel> BuildViewModel(
             AddProjectViewModel? addForm,
             EditProjectViewModel? editForm)
         {
-            // Använd detaljerad hämtning här också
-            var projects = await _projectRepo.GetAllWithDetailsAsync();
-            var statuses = await _statusRepo.GetAllAsync();
+            var projects = await _service.GetAllAsync();
+            var statuses = await _service.GetAllStatusesAsync();
 
             return new ProjectsViewModel
             {
@@ -195,32 +174,31 @@ namespace WebApp.Controllers
                 {
                     Id = p.Id.ToString(),
                     ProjectName = p.ProjectName,
-                    ClientName = p.Client.ClientName,
-                    ProjectDescription = p.ProjectDescription ?? string.Empty,
+                    ClientName = p.ClientName,
+                    ProjectDescription = p.ProjectDescription ?? "",
                     StartDate = p.StartDate,
                     EndDate = p.EndDate,
                     Budget = p.Budget,
-                    StatusText = p.StatusType.Name
+                    StatusText = p.StatusText
                 }),
 
                 AddProjectFormData = addForm ?? new AddProjectViewModel
                 {
-                    Statuses = statuses
-                        .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
+                    Statuses = statuses.Select(s => new SelectListItem(s.Name, s.Id.ToString())),
+                    StartDate = DateTime.Today
                 },
 
                 EditProjectFormData = editForm ?? new EditProjectViewModel
                 {
                     Id = editForm?.Id ?? 0,
-                    ProjectName = editForm?.ProjectName ?? string.Empty,
-                    ClientName = editForm?.ClientName ?? string.Empty,
+                    ProjectName = editForm?.ProjectName ?? "",
+                    ClientName = editForm?.ClientName ?? "",
                     ProjectDescription = editForm?.ProjectDescription,
                     StartDate = editForm?.StartDate ?? DateTime.Today,
                     EndDate = editForm?.EndDate,
                     Budget = editForm?.Budget ?? 0m,
                     StatusTypeId = editForm?.StatusTypeId ?? 1,
-                    Statuses = statuses
-                                     .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
+                    Statuses = statuses.Select(s => new SelectListItem(s.Name, s.Id.ToString()))
                 }
             };
         }
