@@ -13,6 +13,5 @@ public class StatusTypeEntity
     [MaxLength(50)]
     public string Name { get; set; } = null!;
 
-    // Navigation property for related projects
     public ICollection<ProjectEntity> Projects { get; set; } = new List<ProjectEntity>();
 }

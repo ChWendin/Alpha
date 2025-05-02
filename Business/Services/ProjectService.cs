@@ -60,13 +60,11 @@ namespace Business.Services
 
         public async Task AddAsync(AddProjectDto dto)
         {
-            // Hitta eller skapa klient
             var client = await _clientRepo.GetAsync(c => c.ClientName == dto.ClientName)
                          ?? new ClientEntity { ClientName = dto.ClientName };
             if (client.Id == 0)
                 await _clientRepo.AddAsync(client);
 
-            // Sall in nytt projekt
             var p = new ProjectEntity
             {
                 ProjectName = dto.ProjectName,
@@ -82,18 +80,15 @@ namespace Business.Services
 
         public async Task UpdateAsync(EditProjectDto dto)
         {
-            // Hämta existerande projekt inkl detaljer
             var all = await _projRepo.GetAllWithDetailsAsync();
             var p = all.FirstOrDefault(x => x.Id == dto.Id)
                       ?? throw new KeyNotFoundException("Projekt ej funnet");
 
-            // Klienthantering
             var client = await _clientRepo.GetAsync(c => c.ClientName == dto.ClientName)
                          ?? new ClientEntity { ClientName = dto.ClientName };
             if (client.Id == 0)
                 await _clientRepo.AddAsync(client);
 
-            // Uppdatera och spara
             p.ProjectName = dto.ProjectName;
             p.ClientId = client.Id;
             p.ProjectDescription = dto.ProjectDescription;

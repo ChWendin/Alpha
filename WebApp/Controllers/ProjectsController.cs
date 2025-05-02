@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebApp.Models.Projects;
-using Business.Interfaces;        // där IProjectService ligger
-using Business.DTO;              // AddProjectDto, EditProjectDto, ProjectDto
+using Business.Interfaces;
+using Business.DTO;
 
 namespace WebApp.Controllers
 {
@@ -22,15 +19,12 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            // 1) Hämta den enskilda DTO:n
             var dto = await _service.GetByIdAsync(id);
             if (dto == null)
                 return NotFound();
 
-            // 2) Hämta status-listan
             var statuses = await _service.GetAllStatusesAsync();
 
-            // 3) Mappa till din vy-modell
             var vm = new EditProjectViewModel
             {
                 Id = dto.Id,
@@ -45,7 +39,7 @@ namespace WebApp.Controllers
                                         .Select(s => new SelectListItem(s.Name, s.Id.ToString()))
             };
 
-            // 4) Returnera just partialen
+
             return PartialView(
                 "~/Views/Shared/Modals/_EditProjectModalPartial.cshtml",
                 vm
@@ -54,10 +48,8 @@ namespace WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Projects(int? statusTypeId)
         {
-            // 1) Hämta alla DTO:er från service-lagret
             var dtos = await _service.GetAllAsync();
 
-            // 2) Mappa till ProjectViewModel (inkl. StatusTypeId för filtrering)
             var all = dtos
                 .Select(p => new ProjectViewModel
                 {
@@ -69,11 +61,10 @@ namespace WebApp.Controllers
                     EndDate = p.EndDate,
                     Budget = p.Budget,
                     StatusText = p.StatusText,
-                    StatusTypeId = p.StatusTypeId      // <— för att kunna filtrera
+                    StatusTypeId = p.StatusTypeId 
                 })
                 .ToList();
 
-            // 3) Filtrera listan baserat på statusTypeId
             var filtered = statusTypeId switch
             {
                 2 => all.Where(p => p.StatusTypeId == 2),
@@ -81,17 +72,14 @@ namespace WebApp.Controllers
                 _ => all
             };
 
-            // 4) Hämta alla statusar för dropdowns i modalerna
             var statuses = await _service.GetAllStatusesAsync();
 
-            // 5) Bygg upp vy-modellen
             var vm = new ProjectsViewModel
             {
                 AllProjects = all,
                 Projects = filtered,
                 CurrentFilter = statusTypeId ?? 1,
 
-                // Formdata för "Add Project"-modalen
                 AddProjectFormData = new AddProjectViewModel
                 {
                     Statuses = statuses
@@ -99,7 +87,6 @@ namespace WebApp.Controllers
                     StartDate = DateTime.Today
                 },
 
-                // Formdata för "Edit Project"-modalen (tomt initialt, fylls via AJAX)
                 EditProjectFormData = new EditProjectViewModel
                 {
                     Statuses = statuses
@@ -112,7 +99,6 @@ namespace WebApp.Controllers
         }
 
 
-        // POST /Projects/Add
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AddProjectViewModel form)
         {
@@ -141,7 +127,6 @@ namespace WebApp.Controllers
             return RedirectToAction(nameof(Projects));
         }
 
-        // POST /Projects/Edit
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditProjectViewModel form)
         {
@@ -171,7 +156,6 @@ namespace WebApp.Controllers
             return RedirectToAction(nameof(Projects));
         }
 
-        // POST /Projects/Delete/{id}
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
@@ -179,7 +163,6 @@ namespace WebApp.Controllers
             return RedirectToAction(nameof(Projects));
         }
 
-        // Bygg om hela vy-modellen när Add/Edit validering misslyckas
         private async Task<ProjectsViewModel> BuildViewModel(
             AddProjectViewModel? addForm,
             EditProjectViewModel? editForm)

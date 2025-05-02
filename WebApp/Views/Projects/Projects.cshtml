@@ -5,7 +5,6 @@
 
     var cf = Model.CurrentFilter;
 
-    // Räkna på hela listan
     var allCount = Model.AllProjects.Count();
     var startedCount = Model.AllProjects.Count(p => p.StatusTypeId == 2);
     var completedCount = Model.AllProjects.Count(p => p.StatusTypeId == 3);
@@ -44,7 +43,7 @@
 
 @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
 @section Scripts {
-    @* Om ShowAddModal = true, öppna Add-modalen direkt *@
+
     @if ((bool?)(ViewData["ShowAddModal"]) == true)
     {
         <script>
@@ -57,7 +56,6 @@
     }
 }
 
-<!-- EDIT-MODAL som ligger tom tills AJAX laddar in formuläret -->
 <section id="edit-project-modal" class="modal hide">
     <div class="card">
         <div class="card-header">
@@ -72,7 +70,7 @@
             <div class="project-image">
                 <img src="~/images/icons/Project-Image.svg" asp-append-version="true" alt="" />
             </div>
-            <!-- Här kommer form:en att laddas in -->
+
             <div id="edit-project-form-container"></div>
         </div>
     </div>
